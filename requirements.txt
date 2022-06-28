@@ -1,0 +1,12 @@
+cairocffi==1.3.0
+CairoSVG==2.5.2
+cffi==1.15.0
+cssselect2==0.6.0
+defusedxml==0.7.1
+geographiclib==1.52
+geopy==2.2.0
+Pillow==8.4.0
+pycparser==2.21
+tinycss2==1.1.1
+urllib3==1.26.9
+webencodings==0.5.1
