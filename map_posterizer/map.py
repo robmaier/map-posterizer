@@ -206,20 +206,21 @@ class Map:
         self.style = style
         # create map tile provider
         self.map_tile_provider = MapTileProvider(style.style, "cache/", True)
-        width_px = mm_to_pixels(size_mm, dpi)
-        # make map quadratic
-        self.size_px = (width_px, width_px)
+        # map size and resolution
+        self.size_px = mm_to_pixels_tuple((size_mm[0], size_mm[1]), dpi)
+        sides_ratio = float(self.size_px[1]) / self.size_px[0]
         self.dpi = dpi
         self.zoom = zoom
 
-        # compute tile grid dimensions and raw map size
+        # compute tile grid dimensions
         corner_tl_tile, corner_br_tile = degToCornerTiles(corner_tl_deg, corner_br_deg, self.zoom)
-        # compute tile grid dimensions (make grid squared)
         num_tiles = numTilesFromCorners(corner_tl_tile, corner_br_tile, make_squared=True)
+        # align vertical tiles with map sides ratio
+        num_tiles = (num_tiles[0], int(math.ceil(float(num_tiles[0]) * sides_ratio)))
         # update br tile to account for squared grid
         corner_br_tile = (corner_tl_tile[0] + num_tiles[0], corner_tl_tile[1] + num_tiles[1])
         # calculate raw map size
-        raw_size_px = (num_tiles[0] * Map.tile_size_px[0], num_tiles[1] * Map.tile_size_px[1])
+        self.raw_size_px = (num_tiles[0] * Map.tile_size_px[0], num_tiles[1] * Map.tile_size_px[1])
 
         # compute global tiles locations
         self.num_tiles = num_tiles
@@ -228,18 +229,13 @@ class Map:
         # compute global xy locations on tiles
         corner_tl_xy = degToXY(corner_tl_deg[0], corner_tl_deg[1], self.zoom)
         corner_br_xy = degToXY(corner_br_deg[0], corner_br_deg[1], self.zoom)
+        # align bottom right xy location with map sides ratio
+        corner_br_xy = (corner_br_xy[0], corner_tl_xy[1] + (corner_br_xy[0] - corner_tl_xy[0]) * sides_ratio)
         # compute tl and br in local pixels
         self.corner_tl_px_x = int(corner_tl_xy[0] - self.corner_tl_tile[0] * Map.tile_size_px[0])
         self.corner_tl_px_y = int(corner_tl_xy[1] - self.corner_tl_tile[1] * Map.tile_size_px[1])
         self.corner_br_px_x = int(corner_br_xy[0] - self.corner_tl_tile[0] * Map.tile_size_px[0])
         self.corner_br_px_y = int(corner_br_xy[1] - self.corner_tl_tile[1] * Map.tile_size_px[1])
-        self.raw_size_px = raw_size_px
-
-        # make region squared
-        if self.corner_br_px_x - self.corner_tl_px_x > self.corner_br_px_y - self.corner_tl_px_y:
-            self.corner_br_px_y = self.corner_tl_px_y + (self.corner_br_px_x - self.corner_tl_px_x)
-        else:
-            self.corner_br_px_x = self.corner_tl_px_x + (self.corner_br_px_y - self.corner_tl_px_y)
 
         # create raw map image
         self.image_raw = Image.new("RGB", self.raw_size_px, "white")

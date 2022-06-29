@@ -25,7 +25,7 @@ def degToCornerTiles(corner_tl_deg, corner_br_deg, zoom):
     return (corner_tl_tile, corner_br_tile)
 
 def numTilesFromCorners(corner_tl_tile, corner_br_tile, make_squared):
-    num_tiles = (corner_br_tile[0] - corner_tl_tile[0] + 2, corner_br_tile[1] - corner_tl_tile[1] + 2)
+    num_tiles = (corner_br_tile[0] - corner_tl_tile[0] + 1, corner_br_tile[1] - corner_tl_tile[1] + 1)
     if make_squared:
         num_tiles = (max(num_tiles[0], num_tiles[1]), max(num_tiles[0], num_tiles[1]))
     return num_tiles

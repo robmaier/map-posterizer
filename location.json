@@ -1,0 +1,25 @@
+{
+    "name": "Map Posterizer Example",
+    "location": {
+        "top_left": [
+            37.8380,
+            -122.5237
+        ],
+        "bottom_right": [
+            37.7080, 
+            -122.3547
+        ],
+        "marker": [
+            37.779268,
+            -122.419248
+        ],
+        "hide_marker": 0
+    },
+    "zoom": 15,
+    "caption": {
+        "caption1": "M A P   P O S T E R I Z E R",
+        "caption2": "Y O U R   T E X T",
+        "caption3": "S A N   F R A N C I S C O, CA",
+        "caption4": "<lon>  <lat>"
+    }
+}
