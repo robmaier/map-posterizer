@@ -1,0 +1,21 @@
+{
+    "foreground": [
+        255, 
+        255, 
+        255
+    ],
+    "background": [
+        60, 
+        60, 
+        60
+    ],
+    "boost_contrast": 0,
+    "marker": {
+        "size_mm": [
+            8,
+            8
+        ],
+        "style": "heart",
+        "opacity": 0.8
+    }
+}
