@@ -1,6 +1,8 @@
 # MapPosterizer
-*MapPosterizer* is a command line application for generating stylish posters of custom city maps.
+**MapPosterizer** is a command line application for generating stylish posters of custom city maps.
+
 ![MapPosterizer](resources/teaser.jpg)
+
 ## Installation
 Create and activate a virtual environment using `virtualenv` (or any other tool of choice):
 ```bash
@@ -21,6 +23,9 @@ python posterize.py location.json --show
 
 ## Examples
 In the following, we provide the respective commands for generating the city poster maps from the teaser image at the top of this page:
+
+![MapPosterizer Examples](resources/examples.jpg)
+
 ```bash
 # San Francisco:
 python posterize.py -m resources/map_style_light.json -c resources/canvas_style_dark.json -l resources/examples/location_san_francisco.json
