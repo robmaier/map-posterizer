@@ -23,7 +23,9 @@ class CanvasStyle:
         self.background = (255, 255, 255)
         self.border_mm = (20, 20)
         self.border_background = (255, 255, 255)
-        self.font = "Optima"
+        self.text_box_opacity = 235
+        self.text_box_line_width = 0.75
+        self.text_box_font = "Optima"
 
         # load values from dict
         if "size_mm" in config:
@@ -36,8 +38,12 @@ class CanvasStyle:
             self.border_mm = config["border_mm"]
         if "border_background" in config:
             self.border_background = tuple(config["border_background"])
-        if "font" in config:
-            self.font = config["font"]
+        if "text_box_opacity" in config:
+            self.text_box_opacity = config["text_box_opacity"]
+        if "text_box_line_width" in config:
+            self.text_box_line_width = config["text_box_line_width"]
+        if "text_box_font" in config:
+            self.text_box_font = config["text_box_font"]
 
 
 class Canvas:
@@ -62,8 +68,8 @@ class Canvas:
         draw = ImageDraw.Draw(self.image, "RGB")
         draw.rectangle((self.border_px[0], self.border_px[1], 
                         self.image.size[0] - self.border_px[0] - 1, 
-                        self.image.size[1] - self.border_px[1]), 
-                        fill=style.background)
+                        self.image.size[1] - self.border_px[1] - 1), 
+                        fill=self.style.background)
 
     def draw_map(self, map):
         self.map_size_px = map.size
@@ -92,34 +98,34 @@ class Canvas:
         
         # font sizes for captions
         font_size = int(72 / 150 * self.dpi)
-        cap1_font = ImageFont.truetype(self.style.font, font_size)
+        cap1_font = ImageFont.truetype(self.style.text_box_font, font_size)
         cap1_color = self.style.foreground
 
-        font_size2 = int(72 / 150 * self.dpi)
-        cap2_font = ImageFont.truetype(self.style.font, font_size2)
+        font_size2 = int(font_size * 0.80)
+        cap2_font = ImageFont.truetype(self.style.text_box_font, font_size2)
         cap2_color = self.style.foreground
 
         font_size3 = int(font_size * 0.70)
-        cap3_font = ImageFont.truetype(self.style.font, font_size3)
-        cap3_color = (150, 150, 150)
+        cap3_font = ImageFont.truetype(self.style.text_box_font, font_size3)
+        cap3_color = self.style.foreground
 
         font_size4 = int(font_size * 0.50)
-        cap4_font = ImageFont.truetype(self.style.font, font_size4)
+        cap4_font = ImageFont.truetype(self.style.text_box_font, font_size4)
         cap4_color = cap3_color
 
         # compute caption print sizes
-        canvas_draw = ImageDraw.Draw(self.image, "RGBA")
-        text_w1, text_h1 = canvas_draw.textsize(image_caption1, font=cap1_font)
+        draw = ImageDraw.Draw(self.image, "RGBA")
+        text_w1, text_h1 = draw.textsize(image_caption1, font=cap1_font)
         text_spacer2 = 0
         text_w2 = 0
         text_h2 = 0
         if not image_caption2 == "":
             text_spacer2 = mm_to_pixels(5, self.dpi)
-            text_w2, text_h2 = canvas_draw.textsize(image_caption2, font=cap2_font)
+            text_w2, text_h2 = draw.textsize(image_caption2, font=cap2_font)
         text_spacer3 = 0
-        text_w3, text_h3 = canvas_draw.textsize(image_caption3, font=cap3_font)
+        text_w3, text_h3 = draw.textsize(image_caption3, font=cap3_font)
         text_spacer4 = mm_to_pixels(5, self.dpi)
-        text_w4, text_h4 = canvas_draw.textsize(image_caption4, font=cap4_font)
+        text_w4, text_h4 = draw.textsize(image_caption4, font=cap4_font)
         text_spacer5 = mm_to_pixels(10, self.dpi) if image_caption2 == "" else mm_to_pixels(2, self.dpi)
 
         # compute vertical text alignment
@@ -127,12 +133,20 @@ class Canvas:
         if not image_caption2 == "":
             box_height_px += text_spacer2 + text_h2
 
-        # compute y offset from box size
-        box_height_max_px = self.size_px[1] - 2 * self.border_px[1] - self.map_size_px[1]
+        # compute y offset from box size (use map width for vertical offset)
+        box_offset_y = self.map_size_px[0]
+        box_height_max_px = self.size_px[1] - 2 * self.border_px[1] - box_offset_y
         box_free_space_px = box_height_max_px - box_height_px
-        box_spacer_px = int(box_free_space_px * 0.3) if box_free_space_px > mm_to_pixels(50, self.dpi) else int(box_free_space_px * 0.5)
-        box_y = self.border_px[1] + self.map_size_px[1] + box_spacer_px
+        box_spacer_px = int(box_free_space_px * 0.3) if box_free_space_px > mm_to_pixels(50, self.dpi) else int(box_free_space_px * 0.4)
+        box_y = self.border_px[1] + box_offset_y + box_spacer_px
         text_spacer3 = box_spacer_px
+
+        # draw text box background
+        box_bg_color = (self.style.background[0], self.style.background[1], self.style.background[2], self.style.text_box_opacity)
+        draw.rectangle((self.border_px[0], self.border_px[1] + self.map_size_px[0], 
+                               self.image.size[0] - self.border_px[0] - 1, 
+                               self.image.size[1] - self.border_px[1]),
+                               fill=box_bg_color)
 
         pos_y1 = 0
         pos_y2 = pos_y1 + text_spacer2 + text_h1
@@ -141,25 +155,25 @@ class Canvas:
 
         # draw caption 1
         pos_x = self.center_px[0] - text_w1 / 2
-        canvas_draw.text((pos_x, box_y + pos_y1), image_caption1, font=cap1_font, fill=cap1_color, align="center")
+        draw.text((pos_x, box_y + pos_y1), image_caption1, font=cap1_font, fill=cap1_color, align="center")
 
         if not image_caption2 == "":
             # draw caption 2
             pos_x = self.center_px[0] - text_w2 / 2
-            canvas_draw.text((pos_x, box_y + pos_y2), image_caption2, font=cap2_font, fill=cap2_color, align="center")
-        else:
-            # draw line
-            pos_line_y = box_y + pos_y3 - int(box_spacer_px * 0.5)
-            line_indent_x = mm_to_pixels(40, self.dpi) if len(image_caption1) < 15 else mm_to_pixels(30, self.dpi)
-            canvas_draw.rectangle((self.border_px[0] + line_indent_x, pos_line_y, self.image.size[0] - self.border_px[0] - line_indent_x, pos_line_y + mm_to_pixels(0.2, self.dpi)), fill=cap1_color)
+            draw.text((pos_x, box_y + pos_y2), image_caption2, font=cap2_font, fill=cap2_color, align="center")
+
+        # draw line
+        pos_line_y = box_y + pos_y3 - int(box_spacer_px * 0.5)
+        line_indent_x = int(self.map_size_px[0] * (1.0 - self.style.text_box_line_width) * 0.5)
+        draw.rectangle((self.border_px[0] + line_indent_x, pos_line_y, self.image.size[0] - self.border_px[0] - line_indent_x, pos_line_y + mm_to_pixels(0.2, self.dpi)), fill=cap1_color)
 
         # draw caption 3
         pos_x = self.center_px[0] - text_w3 / 2
-        canvas_draw.text((pos_x, box_y + pos_y3), image_caption3, font=cap3_font, fill=cap3_color, align="center")
+        draw.text((pos_x, box_y + pos_y3), image_caption3, font=cap3_font, fill=cap3_color, align="center")
 
         # draw caption 4
         pos_x = self.center_px[0] - text_w4 / 2
-        canvas_draw.text((pos_x, box_y + pos_y4), image_caption4, font=cap4_font, fill=cap4_color, align="center")
+        draw.text((pos_x, box_y + pos_y4), image_caption4, font=cap4_font, fill=cap4_color, align="center")
 
     def save(self, filename, show):
         self.image.save(filename, 'PNG')

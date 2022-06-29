@@ -10,8 +10,8 @@ def parse_args():
     parser.add_argument("-l", "--location", type=argparse.FileType('r'), help="location json file", default="location.json")
     parser.add_argument("-o", "--output", type=str, help="output png file", default="map.png")
     parser.add_argument("-d", "--dpi", type=int, help="dpi", default=300)
-    parser.add_argument("-c", "--canvas_style", type=argparse.FileType('r'), help="canvas style json file", default="resources/canvas_style_light.json")
-    parser.add_argument("-m", "--map_style", type=argparse.FileType('r'), help="map style json file", default="resources/map_style_dark.json")
+    parser.add_argument("-c", "--canvas_style", type=argparse.FileType('r'), help="canvas style json file", default="resources/canvas_style_dark.json")
+    parser.add_argument("-m", "--map_style", type=argparse.FileType('r'), help="map style json file", default="resources/map_style_light.json")
     parser.add_argument("-s", "--show", help="show generated map", action="store_true")
 
     # parse command line arguments
@@ -61,7 +61,7 @@ def main():
     canvas = canvas.Canvas(canvas_style, args.dpi)
     print(canvas)
     # create map
-    map = map.Map(map_style, canvas.content_size_mm[0], args.dpi, location.top_left, location.bottom_right, location.zoom)
+    map = map.Map(map_style, canvas.content_size_mm, args.dpi, location.top_left, location.bottom_right, location.zoom)
     print(map)
 
     # download all tile images
