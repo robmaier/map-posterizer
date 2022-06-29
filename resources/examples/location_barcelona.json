@@ -1,0 +1,24 @@
+{
+    "name": "Barcelona",
+    "location": {
+        "top_left": [
+            41.4075, 
+            2.1459
+        ],
+        "bottom_right": [
+            41.3643,
+            2.2072
+        ],
+        "marker": [
+            41.386822,
+            2.169909
+        ]
+    },
+    "zoom": 17,
+    "caption": {
+        "caption1": "H O M E",
+        "caption2": "",
+        "caption3": "B A R C E L O N A",
+        "caption4": "<lon>  <lat>"
+    }
+}

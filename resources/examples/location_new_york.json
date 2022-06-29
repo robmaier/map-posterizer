@@ -1,0 +1,25 @@
+{
+    "name": "New York",
+    "location": {
+        "top_left": [
+            40.8021, 
+            -74.0475
+        ],
+        "bottom_right": [
+            40.6921,
+            -73.9109
+        ],
+        "marker": [
+            40.752757,
+            -73.977233
+        ],
+        "hide_marker": 1
+    },
+    "zoom": 15,
+    "caption": {
+        "caption1": "N E W  Y O R K",
+        "caption2": "",
+        "caption3": "U N I T E D  S T A T E S",
+        "caption4": "<lon>  <lat>"
+    }
+}

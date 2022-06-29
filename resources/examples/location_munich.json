@@ -1,0 +1,24 @@
+{
+    "name": "Munich",
+    "location": {
+        "top_left": [
+            48.1608,
+            11.5437
+        ],
+        "bottom_right": [
+            48.1195, 
+            11.6093
+        ],
+        "marker": [
+            48.137402,
+            11.575582
+        ]
+    },
+    "zoom": 17,
+    "caption": {
+        "caption1": "H O M E",
+        "caption2": "D A V I D  &  L I N D A",
+        "caption3": "M U N I C H",
+        "caption4": "<lon>  <lat>"
+    }
+}

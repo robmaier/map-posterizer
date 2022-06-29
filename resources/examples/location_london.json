@@ -1,0 +1,24 @@
+{
+    "name": "London",
+    "location": {
+        "top_left": [
+            51.5337, 
+            -0.1923
+        ],
+        "bottom_right": [
+            51.4653,
+            -0.0687
+        ],
+        "marker": [
+            51.499421,
+            -0.128463
+        ]
+    },
+    "zoom": 16,
+    "caption": {
+        "caption1": "H O M E",
+        "caption2": "",
+        "caption3": "L O N D O N,  U K",
+        "caption4": "<lon>  <lat>"
+    }
+}
